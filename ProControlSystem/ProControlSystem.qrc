@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>res/CSViewStyle.qss</file>
+    </qresource>
+</RCC>
