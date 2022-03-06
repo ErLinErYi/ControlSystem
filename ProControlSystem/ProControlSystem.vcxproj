@@ -64,7 +64,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>.\src\;.\src\VideoPlayer;.\src\Rardar;.\src\DeviceData;.\src\Log;.\dependency\RadarDll\;.\dependency\ControlCarDll\;.\src\ControlCar;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\src\;.\src\VideoPlayer;.\src\Rardar;.\src\DeviceData;.\src\LogMessage;.\dependency\RadarDll\;.\dependency\ControlCarDll\;.\src\ControlCar;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>.\dependency\RadarDll\Debug\;.\dependency\ControlCarDll\Debug\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -73,7 +73,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>.\src\;.\src\VideoPlayer;.\src\Rardar;.\src\DeviceData;.\src\Log;.\dependency\RadarDll\;.\dependency\ControlCarDll\;.\src\ControlCar;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\src\;.\src\VideoPlayer;.\src\Rardar;.\src\DeviceData;.\src\LogMessage;.\dependency\RadarDll\;.\dependency\ControlCarDll\;.\src\ControlCar;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -118,7 +118,7 @@
     <ClCompile Include="src\DeviceData\CRightWheelSpeedView.cpp" />
     <ClCompile Include="src\DeviceData\CSpeedSignalView.cpp" />
     <ClCompile Include="src\DeviceData\CSteeringValueView.cpp" />
-    <ClCompile Include="src\Log\CLogMessage.cpp" />
+    <ClCompile Include="src\LogMessage\CLogMessage.cpp" />
     <ClCompile Include="src\Rardar\CRadarScanView.cpp" />
     <ClCompile Include="src\VideoPlayer\CVideoPlayer.cpp" />
     <ClCompile Include="src\VideoPlayer\CVideoWidget.cpp" />
@@ -150,7 +150,7 @@
     <QtMoc Include="src\DeviceData\CSpeedSignalView.h" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="src\Log\CLogMessage.h" />
+    <QtMoc Include="src\LogMessage\CLogMessage.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DeviceData\CControlReceiveDeviceData.h" />

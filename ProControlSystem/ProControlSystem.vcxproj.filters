@@ -61,7 +61,7 @@
     <ClCompile Include="src\DeviceData\CSpeedSignalView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Log\CLogMessage.cpp">
+    <ClCompile Include="src\LogMessage\CLogMessage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Rardar\CControlRadar.cpp">
@@ -105,7 +105,7 @@
     <QtMoc Include="src\DeviceData\CSpeedSignalView.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="src\Log\CLogMessage.h">
+    <QtMoc Include="src\LogMessage\CLogMessage.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="src\VideoPlayer\CVideoWidget.h">

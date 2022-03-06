@@ -68,10 +68,10 @@ BEGIN
         BLOCK "080404b0"
         BEGIN
             VALUE "CompanyName", "LZ"
-            VALUE "FileDescription", "小车控制程序"
+            VALUE "FileDescription", "控制系统"
             VALUE "FileVersion", "1.0.0.0"
             VALUE "InternalName", "ControlSystem.exe"
-            VALUE "LegalCopyright", "Copyright (C) 2022"
+            VALUE "LegalCopyright", "Copyright (C) LZ 2022"
             VALUE "OriginalFilename", "ControlSystem.exe"
             VALUE "ProductName", "ControlSystem"
             VALUE "ProductVersion", "1.0.0.0"
