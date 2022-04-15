@@ -158,7 +158,7 @@ void CControlCarView::funChangeSliderNumber()
 void CControlCarView::funCreateTimer()
 {
 	_timer = new QTimer(this);
-	_timer->start(100);
+	_timer->start(30);
 
 	connect(_timer, &QTimer::timeout, this, [=]()
 		{

@@ -82,6 +82,12 @@
     <ClCompile Include="src\DeviceData\CControlReceiveDeviceData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\VideoPlayer\LaneLineDetector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\VideoPlayer\ReadFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="src\VideoPlayer\CVideoPlayer.h">
@@ -135,6 +141,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\DeviceData\CControlReceiveDeviceData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\VideoPlayer\LaneLineDetector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\VideoPlayer\ReadFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,5 +1,8 @@
 ﻿#pragma once
+#include <opencv.hpp>
 #include "qwidget.h"
+
+#define USEOPENCV
 
 class QCamera;
 class QMediaPlayer;
@@ -8,6 +11,9 @@ class CVideoWidget;
 class CVideoPlayer : public QWidget
 {
 	Q_OBJECT
+signals:
+	void funCloseCamera();
+
 public:
 	CVideoPlayer(QWidget* parent = nullptr);
 	~CVideoPlayer();
@@ -26,7 +32,7 @@ public:
 
 	/// @brief 设置媒体文件名称
 	/// @param name 所要播放的媒体文件
-	void funSetMediaFilesName(const QString& name);
+	void funSetMediaFilesName(QString& name);
 
 	/// @brief 检测摄像头图像
 	void funCheckCamera();
@@ -40,9 +46,14 @@ public:
 	/// @brief 抓取摄像头图像函数
 	void funCameraImageCapture();
 
+	/// @brief 接收opencvMat数据
+	/// @param dst 
+	void funReceiveOpencvMatData(const cv::Mat& dst);
+
 protected:
 	void resizeEvent(QResizeEvent* e) override;
 	void keyPressEvent(QKeyEvent* event) override;
+	void paintEvent(QPaintEvent*) override;
 
 	/// @brief 视频播放初始化函数
 	void funVideoInit();
@@ -57,8 +68,13 @@ protected:
 	void funResizeWidget();
 
 private:
+	void funSetIsCameraClose(bool close = false);
+
+private:
 	QCamera* _cameraPlayer;          ///< 摄像头播放器
 	QMediaPlayer* _mediaPlayer;      ///< 媒体播放器
 	QMediaPlaylist* _medaiPlayList;  ///< 播放列表
 	CVideoWidget* _videoWidget;      ///< 媒体播放窗口
+	cv::Mat _dstImage;               ///< opencv处理后返回的图像
+	bool _isCameraClose;             ///< 视像头是否关闭
 };

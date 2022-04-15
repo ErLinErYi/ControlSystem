@@ -9,15 +9,18 @@
 #include "qaction.h"
 #include "qfiledialog.h"
 #include "qdesktopwidget.h"
+#include "qpainter.h"
 #include "CLogMessage.h"
 #include "CVideoWidget.h"
 #include "ProControlSystem.h"
+#include "ReadFile.h"
 
 CVideoPlayer::CVideoPlayer(QWidget* parent) :
 	_mediaPlayer(nullptr),
 	_medaiPlayList(nullptr),
 	_cameraPlayer(nullptr),
 	_videoWidget(new CVideoWidget(this)),
+	_isCameraClose(true),
 	QWidget(parent)
 {
 	funAddMenuAction();
@@ -25,6 +28,12 @@ CVideoPlayer::CVideoPlayer(QWidget* parent) :
 
 CVideoPlayer::~CVideoPlayer()
 {
+}
+
+void CVideoPlayer::funReceiveOpencvMatData(const cv::Mat& dst)
+{
+	_dstImage = dst;
+	this->update();
 }
 
 void CVideoPlayer::resizeEvent(QResizeEvent* e)
@@ -48,6 +57,32 @@ void CVideoPlayer::keyPressEvent(QKeyEvent* event)
 	}
 }
 
+void CVideoPlayer::paintEvent(QPaintEvent*)
+{
+	QPainter painter(this);
+	painter.begin(this);
+	painter.setRenderHint(QPainter::Antialiasing);
+
+	auto myRadarViewWidth = size().width();
+	auto myRadarViewHeight = size().height();
+	auto myRad = std::min(myRadarViewHeight, myRadarViewWidth);
+
+	painter.setViewport(QRect((myRadarViewWidth - myRad) / 2, (myRadarViewHeight - myRad) / 2, myRad, myRad));
+	painter.setWindow(-200, -200, 400, 400);
+
+	if (_isCameraClose)
+	{
+		painter.fillRect(this->rect(), QBrush(QColor(34, 34, 34)));
+	}
+	else
+	{
+		QImage image = QImage((uchar*)(_dstImage.data), _dstImage.cols, _dstImage.rows, QImage::Format_BGR888);
+		painter.drawImage(-QPoint(image.width() / 2, image.height() / 2), image);
+	}
+
+	painter.end();
+}
+
 void CVideoPlayer::funVideoInit()
 {
 	if (!_mediaPlayer)_mediaPlayer = new QMediaPlayer(this);
@@ -56,40 +91,52 @@ void CVideoPlayer::funVideoInit()
 
 void CVideoPlayer::funVideoPlay()
 {
+#ifndef USEOPENCV
 	_mediaPlayer->play();
 	_mediaPlayer->setVolume(0);
 	_videoWidget->show();
 	_videoWidget->resize(this->size());
-
 	CLogMessage::funLogMessage("视频文件开始播放！");
+#endif // !USEOPENCV
 }
 
 void CVideoPlayer::funVideoClose()
 {
+#ifndef USEOPENCV
 	_mediaPlayer->stop();
 	_medaiPlayList->clear();
 	_videoWidget->close();
-
+#else
+	emit funCloseCamera();
+	funSetIsCameraClose(true);
+#endif // !USEOPENCV
 	ProControlSystem::funGetViewUi().videoPlayerLabel->show();
 	CLogMessage::funLogMessage("视频文件已关闭！");
 }
 
 void CVideoPlayer::funVideoStop()
 {
+#ifndef USEOPENCV
 	_mediaPlayer->pause();
 
 	CLogMessage::funLogMessage("视频文件已暂停！");
+#endif
 }
 
 void CVideoPlayer::funVideoResume()
 {
+#ifndef USEOPENCV
 	_mediaPlayer->play();
 
 	CLogMessage::funLogMessage("视频文件恢复播放！");
+#endif
 }
 
-void CVideoPlayer::funSetMediaFilesName(const QString& name)
+void CVideoPlayer::funSetMediaFilesName(QString& name)
 {
+	CLogMessage::funLogMessage(name + " 视频文件加载成功！");
+	ProControlSystem::funGetViewUi().videoPlayerLabel->hide();
+#ifndef USEOPENCV
 	funVideoInit();
 
 	_medaiPlayList->clear();
@@ -97,9 +144,13 @@ void CVideoPlayer::funSetMediaFilesName(const QString& name)
 	_medaiPlayList->setPlaybackMode(QMediaPlaylist::CurrentItemInLoop);
 	_mediaPlayer->setPlaylist(_medaiPlayList);
 	_mediaPlayer->setVideoOutput(_videoWidget);
-
-	ProControlSystem::funGetViewUi().videoPlayerLabel->hide();
-	CLogMessage::funLogMessage(name+" 视频文件加载成功！");
+#else
+	funSetIsCameraClose(false);
+	ReadFiles file;
+	auto right = name.lastIndexOf('.');
+	auto left = name.lastIndexOf('/');
+	file.readImage(name.replace(left + 1, right - left - 1, "*").toStdString());
+#endif
 }
 
 void CVideoPlayer::funCheckCamera()
@@ -119,28 +170,38 @@ void CVideoPlayer::funCheckCamera()
 
 void CVideoPlayer::funCameraInit()
 {
+#ifndef USEOPENCV
 	auto myCameraInfo = QCameraInfo::defaultCamera();
-	
 	if (!_cameraPlayer) _cameraPlayer = new QCamera(myCameraInfo, this);
 	_cameraPlayer->setViewfinder(_videoWidget);
+#endif // USEOPENCV
 	ProControlSystem::funGetViewUi().videoPlayerLabel->hide();
-
 	CLogMessage::funLogMessage("默认摄像头已打开！");
 }
 
 void CVideoPlayer::funCameraPlay()
 {
+	CLogMessage::funLogMessage("摄像头画面已显示！");
+#ifdef USEOPENCV
+	funSetIsCameraClose(false);
+	ReadFiles file;
+	file.readCamera();
+#else
 	_videoWidget->show();
 	_videoWidget->resize(this->size());
 	_cameraPlayer->start();
-
-	CLogMessage::funLogMessage("摄像头画面已显示！");
+#endif
 }
 
 void CVideoPlayer::funCameraStop()
 {
+#ifdef USEOPENCV
+	emit funCloseCamera();
+	funSetIsCameraClose(true);
+#else
 	_cameraPlayer->stop();
 	_videoWidget->close();
+#endif // USEOPENCV
 	ProControlSystem::funGetViewUi().videoPlayerLabel->show();
 
 	CLogMessage::funLogMessage("摄像头已关闭！");
@@ -199,15 +260,15 @@ void CVideoPlayer::funAddMenuAction()
 			
 			if (!myFile.isEmpty())
 			{
-				funSetMediaFilesName(myFile);
-				funVideoPlay();
-
 				myCloseVideo->setEnabled(true);
 				myStopVideo->setEnabled(true);
 				myOpenVideo->setEnabled(false);
 				myFullScreen->setEnabled(true);
 
 				CLogMessage::funLogMessage(myFile + " 文件打开成功！");
+
+				funSetMediaFilesName(myFile);
+				funVideoPlay();
 			}
 			else
 			{
@@ -283,8 +344,15 @@ void CVideoPlayer::funAddMenuAction()
 
 void CVideoPlayer::funResizeWidget()
 {
+#ifndef USEOPENCV
 	if (!_videoWidget->isFullScreen())
 	{
 		_videoWidget->resize(this->size());
 	}
+#endif
+}
+
+void CVideoPlayer::funSetIsCameraClose(bool close)
+{
+	_isCameraClose = close;
 }

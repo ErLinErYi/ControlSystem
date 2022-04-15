@@ -58,6 +58,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <IncludePath>D:\Opencv\build\include\opencv2;D:\Opencv\build\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Opencv\build\x64\vc15\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
   </PropertyGroup>
@@ -68,7 +70,7 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>.\dependency\RadarDll\Debug\;.\dependency\ControlCarDll\Debug\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_world454d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -122,6 +124,8 @@
     <ClCompile Include="src\Rardar\CRadarScanView.cpp" />
     <ClCompile Include="src\VideoPlayer\CVideoPlayer.cpp" />
     <ClCompile Include="src\VideoPlayer\CVideoWidget.cpp" />
+    <ClCompile Include="src\VideoPlayer\LaneLineDetector.cpp" />
+    <ClCompile Include="src\VideoPlayer\ReadFile.cpp" />
     <QtRcc Include="ProControlSystem.qrc" />
     <QtUic Include="ProControlSystem.ui" />
     <QtMoc Include="src\ProControlSystem.h" />
@@ -158,6 +162,8 @@
     <ClInclude Include="dependency\RadarDll\CConnectRadar.h" />
     <ClInclude Include="src\ControlCar\CControlCarReceiveData.h" />
     <ClInclude Include="src\ControlCar\CControlCarSendData.h" />
+    <ClInclude Include="src\VideoPlayer\LaneLineDetector.h" />
+    <QtMoc Include="src\VideoPlayer\ReadFile.h" />
     <QtMoc Include="src\ControlCar\CControlCarView.h" />
     <ClInclude Include="src\Rardar\CControlRadar.h" />
     <ClInclude Include="resource.h" />
